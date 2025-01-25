@@ -2,11 +2,19 @@ import Image from "next/image";
 import { games } from "../../data/games";
 import { notFound } from "next/navigation";
 
+// 動的ルートのパラメータを型付け
 type Props = {
   params: {
     id: string;
   };
 };
+
+// generateStaticParamsを追加
+export async function generateStaticParams() {
+  return games.map((game) => ({
+    id: game.id.toString(),
+  }));
+}
 
 export default function GameDetail({ params }: Props) {
   const game = games.find((g) => g.id.toString() === params.id);
