@@ -54,16 +54,17 @@ export default function Home() {
                   width={400}
                   height={200}
                   className="object-cover rounded mb-4"
+                  priority={true} // LCP画像用
                 />
                 <h3 className="font-bold">{game.title}</h3>
                 <p className="text-sm text-gray-700">{game.description}</p>
                 <p className="font-bold text-blue-500 mt-2">{game.price}</p>
-                <a
+                <Link
                   href={game.link}
                   className="bg-blue-500 text-white px-4 py-2 rounded mt-2 inline-block"
                 >
                   購入リンク
-                </a>
+                </Link>
                 <Link
                   href={`/games/${game.id}`}
                   className="text-blue-500 hover:underline mt-2 block"
