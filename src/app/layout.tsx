@@ -5,9 +5,9 @@ import Navbar from "./components/Navbar";
 
 // RobotoとRoboto Monoの設定
 const roboto = Roboto({
-  weight: ["400", "500", "700"],
-  subsets: ["latin"],
-  variable: "--font-roboto",
+  weight: ["400", "500", "700"], // 必要なウェイトを指定
+  subsets: ["latin"], // サブセットを指定
+  variable: "--font-roboto", // CSS変数として使用するための名前
 });
 
 const robotoMono = Roboto_Mono({
@@ -19,7 +19,7 @@ const robotoMono = Roboto_Mono({
 // ページのメタデータ
 export const metadata: Metadata = {
   title: "My Game Site",
-  description: "Explore and discover amazing games!",
+  description: "Explore and discover amazing games!", // メタデータの説明を統一
 };
 
 // ルートレイアウトコンポーネント
