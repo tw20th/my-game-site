@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 type Game = {
   id: number;
@@ -119,7 +120,7 @@ export default function Home() {
       <main className="mt-8">
         <section className="mb-8">
           <h2 className="text-2xl font-semibold mb-4">検索結果</h2>
-          <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {sortedGames.map((game) => (
               <div key={game.id} className="p-4 border rounded shadow">
                 <h3 className="font-bold text-lg">{game.name}</h3>
@@ -140,7 +141,6 @@ export default function Home() {
                 <p className="text-sm font-bold text-blue-500">
                   ジャンル: {game.genres.map((g) => g.name).join(", ")}
                 </p>
-                {/* 楽天アフィリエイトリンク */}
                 <a
                   href={`https://search.rakuten.co.jp/search/mall/${encodeURIComponent(
                     game.name
@@ -151,11 +151,17 @@ export default function Home() {
                 >
                   楽天で購入
                 </a>
+                <Link
+                  href={`/games/${game.id}`}
+                  className="inline-block mt-4 text-blue-500 hover:underline"
+                >
+                  詳細を見る
+                </Link>
               </div>
             ))}
           </div>
         </section>
-        {/* ページネーション */}
+
         <div className="flex flex-wrap justify-center items-center mt-8 gap-4">
           <button
             onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
