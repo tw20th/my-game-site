@@ -53,14 +53,26 @@ export default async function GameDetail({ params }: Props) {
         ジャンル: {game.genres.map((genre: Genre) => genre.name).join(", ")}
       </p>
       <p className="mt-4">{game.description || "説明がありません。"}</p>
-      <a
-        href={`https://rawg.io/games/${game.id}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="inline-block mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-      >
-        RAWGで詳しく見る
-      </a>
+      <div className="flex flex-wrap gap-4 mt-4">
+        {/* RAWGリンク */}
+        <a
+          href={`https://rawg.io/games/${game.id}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-block bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+        >
+          RAWGで詳しく見る
+        </a>
+        {/* 楽天アフィリエイトリンク */}
+        <a
+          href={`https://affiliate.rakuten.co.jp/link?ITEM_ID=XXXXXX`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-block bg-gradient-to-r from-pink-500 to-red-500 text-white px-6 py-3 rounded shadow-lg hover:shadow-xl transition"
+        >
+          楽天で購入
+        </a>
+      </div>
     </div>
   );
 }
