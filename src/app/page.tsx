@@ -2,8 +2,8 @@
 
 import SliderComponent from "@/app/components/SliderComponent";
 import GameCard from "@/app/components/GameCard";
-import GameSection from "@/app/components/GameSection"; // インポート追加
-import Pagination from "@/app/components/Pagination"; // インポート追加
+import { GameSection } from "@/app/components/GameSection";
+import Pagination from "@/app/components/Pagination";
 import { useFetchGames } from "@/app/hooks/useFetchGames";
 
 export default function Home() {
@@ -20,13 +20,6 @@ export default function Home() {
     error,
   } = useFetchGames();
 
-  if (loading)
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <p className="text-xl font-bold">Loading...</p>
-      </div>
-    );
-
   if (error)
     return (
       <div className="flex justify-center items-center h-screen">
@@ -39,11 +32,36 @@ export default function Home() {
       <SliderComponent />
 
       {/* 各セクションの描画 */}
-      <GameSection title="新作ゲーム" games={newReleases} />
-      <GameSection title="高評価ゲーム" games={topRatedGames} />
-      <GameSection title="おすすめRPGゲーム" games={rpgGames} />
-      <GameSection title="おすすめアクションゲーム" games={actionGames} />
-      <GameSection title="週間人気ゲーム" games={trendingGames} />
+      <GameSection
+        title="新作ゲーム"
+        games={newReleases}
+        loading={loading}
+        onLoadMore={() => setPage(page + 1)}
+      />
+      <GameSection
+        title="高評価ゲーム"
+        games={topRatedGames}
+        loading={loading}
+        onLoadMore={() => setPage(page + 1)}
+      />
+      <GameSection
+        title="おすすめRPGゲーム"
+        games={rpgGames}
+        loading={loading}
+        onLoadMore={() => setPage(page + 1)}
+      />
+      <GameSection
+        title="おすすめアクションゲーム"
+        games={actionGames}
+        loading={loading}
+        onLoadMore={() => setPage(page + 1)}
+      />
+      <GameSection
+        title="週間人気ゲーム"
+        games={trendingGames}
+        loading={loading}
+        onLoadMore={() => setPage(page + 1)}
+      />
 
       {/* ページネーション */}
       <div className="mt-8">

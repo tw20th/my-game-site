@@ -27,7 +27,7 @@ export function useFetchGames(pageSize = 10) {
         setLoading(true);
         const data = await fetchGames(page, pageSize);
         if (!abortController.signal.aborted) {
-          setGames(Array.isArray(data) ? data : []);
+          setGames((prevGames) => [...prevGames, ...data]);
         }
       } catch (err: unknown) {
         if (!abortController.signal.aborted) {

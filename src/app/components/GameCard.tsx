@@ -1,12 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Game } from "@/types/Game"; // Game 型をインポート
+import { generateAmazonLink } from "@/services/amazon"; // Amazonリンク生成関数をインポート
 
 type GameCardProps = {
   game: Game;
 };
 
 export default function GameCard({ game }: GameCardProps) {
+  const amazonLink = generateAmazonLink(game.name); // ゲーム名からAmazonリンクを生成
+
   return (
     <div className="p-4 border rounded-lg shadow hover:shadow-lg transition-transform transform hover:translate-y-[-5px]">
       {/* タイトル */}
@@ -19,8 +22,8 @@ export default function GameCard({ game }: GameCardProps) {
           <Image
             src={game.background_image}
             alt={`Game cover of ${game.name}`}
-            layout="fill"
-            objectFit="cover"
+            fill // Next.js Imageの新しいプロパティに変更
+            style={{ objectFit: "cover" }} // 新しい方式でobjectFitを指定
             className="rounded-md"
           />
         </div>
@@ -40,6 +43,17 @@ export default function GameCard({ game }: GameCardProps) {
       >
         楽天で購入
       </a>
+      {/* Amazonリンクボタン */}
+      {amazonLink && (
+        <a
+          href={amazonLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-block mt-4 bg-yellow-500 text-black px-4 py-2 rounded hover:bg-yellow-600 transition"
+        >
+          Amazonで購入
+        </a>
+      )}
       {/* 詳細ページリンク */}
       <Link
         href={`/games/${game.id}`}
