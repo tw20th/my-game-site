@@ -1,4 +1,5 @@
-import type { Metadata } from "next";
+"use client";
+
 import { ReactNode, useEffect } from "react";
 import { Roboto, Roboto_Mono } from "next/font/google";
 import Script from "next/script";
@@ -19,10 +20,6 @@ const robotoMono = Roboto_Mono({
 });
 
 // ページのメタデータ
-export const metadata: Metadata = {
-  title: "My Game Site",
-  description: "Discover your next favorite game",
-};
 
 declare global {
   interface Window {
