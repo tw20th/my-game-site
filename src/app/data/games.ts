@@ -4,8 +4,8 @@ export const games = [
     title: "Legend of Adventure",
     description: "An epic RPG with stunning visuals and a captivating story.",
     price: "¥5,980",
-    genre: "RPG", // 元のコードに追加されていた情報を保持
-    image: "/images/legend-of-adventure.jpg", // パスを統一
+    genre: "RPG",
+    image: "/images/legend-of-adventure.jpg",
     link: "https://example.com/legend-of-adventure",
   },
   {
@@ -13,8 +13,8 @@ export const games = [
     title: "Space Wars",
     description: "A fast-paced space shooter with multiplayer support.",
     price: "¥4,480",
-    genre: "Shooter", // 元のコードに追加されていた情報を保持
-    image: "/images/space-wars.jpg", // パスを統一
+    genre: "Shooter",
+    image: "/images/space-wars.jpg",
     link: "https://example.com/space-wars",
   },
   {

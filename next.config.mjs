@@ -1,12 +1,22 @@
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url)); // __dirname の代替
+
 /**
  * @type {import('next').NextConfig}
  */
 const nextConfig = {
-  // 設定オプションをここに記述
-  reactStrictMode: true, // Reactの厳密モードを有効化
-  swcMinify: true, // SWCによる最小化を有効化
+  reactStrictMode: true, // React の厳密モードを有効化
   images: {
-    domains: ["media.rawg.io"], // 画像のホスト名を追加
+    domains: ["media.rawg.io"], // 許可する画像ドメイン
+  },
+  webpack: (config) => {
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      "@": path.resolve(__dirname, "src"), // エイリアス設定
+    };
+    return config;
   },
 };
 
