@@ -1,7 +1,8 @@
-import { Game, GameResponse } from "@/types/Game";
+import { Game, GameResponse } from "@/types/Game"; // 'Genre'を削除
 
 // 環境変数からAPIベースURLとAPIキーを取得
-const RAWG_API_BASE_URL = process.env.NEXT_PUBLIC_RAWG_API_URL || "";
+const RAWG_API_BASE_URL =
+  process.env.NEXT_PUBLIC_RAWG_API_URL || "https://api.rawg.io/api";
 const RAWG_API_KEY = process.env.NEXT_PUBLIC_RAWG_API_KEY || "";
 
 // 共通のデータ変換関数
@@ -12,7 +13,7 @@ function mapGameData(data: GameResponse[]): Game[] {
     description: game.description_raw || "No description available.",
     rating: game.rating || 0,
     platforms: game.platforms?.map((p) => p.platform.name) || [],
-    genres: game.genres || [],
+    genres: game.genres?.map((g) => ({ id: g.id, name: g.name })) || [], // 修正
     screenshots: game.short_screenshots || [],
     background_image: game.background_image || null,
     released: game.released || "Unknown release date",
@@ -53,6 +54,8 @@ async function fetchWithTimeout(
 // ジャンル別ゲームを取得
 export async function fetchGamesByGenre(genre: string): Promise<Game[]> {
   const url = `${RAWG_API_BASE_URL}/games?key=${RAWG_API_KEY}&genres=${genre}`;
+  console.log("Fetching games by genre from:", url); // デバッグ用ログ
+
   const response = await fetchWithTimeout(url);
   if (!response.ok) {
     console.error(
@@ -67,6 +70,8 @@ export async function fetchGamesByGenre(genre: string): Promise<Game[]> {
 // 高評価ゲームを取得
 export async function fetchTopRatedGames(): Promise<Game[]> {
   const url = `${RAWG_API_BASE_URL}/games?key=${RAWG_API_KEY}&ordering=-rating`;
+  console.log("Fetching top-rated games from:", url); // デバッグ用ログ
+
   const response = await fetchWithTimeout(url);
   if (!response.ok) {
     console.error(
@@ -81,6 +86,8 @@ export async function fetchTopRatedGames(): Promise<Game[]> {
 // トレンドゲームを取得
 export async function fetchTrendingGames(): Promise<Game[]> {
   const url = `${RAWG_API_BASE_URL}/games?key=${RAWG_API_KEY}&ordering=-added`;
+  console.log("Fetching trending games from:", url); // デバッグ用ログ
+
   const response = await fetchWithTimeout(url);
   if (!response.ok) {
     console.error(
@@ -95,6 +102,8 @@ export async function fetchTrendingGames(): Promise<Game[]> {
 // 新作ゲームを取得
 export async function fetchNewReleases(): Promise<Game[]> {
   const url = `${RAWG_API_BASE_URL}/games?key=${RAWG_API_KEY}&dates=2023-01-01,2025-12-31&ordering=-released`;
+  console.log("Fetching new releases from:", url); // デバッグ用ログ
+
   const response = await fetchWithTimeout(url);
   if (!response.ok) {
     console.error(
