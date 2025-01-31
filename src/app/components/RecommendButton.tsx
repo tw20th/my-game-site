@@ -67,7 +67,7 @@ export function useFetchGames(pageSize = 10) {
     loading,
     error,
     recommendation,
-    setRecommendation,
+    // setRecommendation,
     fetchRecommendation,
   };
 }
@@ -98,7 +98,7 @@ export default function Home() {
       <SliderComponent />
       <SearchBar setSearchQuery={setSearchQuery} />
       <div className="mb-4">
-        <RecommendButton fetchRecommendation={fetchRecommendation} />
+        <RecommendButton setRecommendation={fetchRecommendation} />
       </div>
       {recommendation && (
         <div className="bg-gray-100 p-4 rounded shadow">

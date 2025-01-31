@@ -9,6 +9,7 @@ import { fetchGames } from "@/utils/fetchGames";
 import { Game } from "@/types/Game";
 
 export function useFetchGames(pageSize = 10) {
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const [games, setGames] = useState<Game[]>([]);
   const [rpgGames, setRpgGames] = useState<Game[]>([]);
   const [actionGames, setActionGames] = useState<Game[]>([]);
@@ -20,6 +21,33 @@ export function useFetchGames(pageSize = 10) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    async function loadSearchedGames() {
+      if (!searchQuery) return; // クエリが空の場合はスキップ
+
+      try {
+        setLoading(true);
+        const response = await fetch(
+          `https://api.rawg.io/api/games?key=${process.env.NEXT_PUBLIC_RAWG_API_KEY}&search=${searchQuery}&page_size=${pageSize}`
+        );
+        if (!response.ok) throw new Error("検索データの取得に失敗しました");
+
+        const data = await response.json();
+        setGames(data.results);
+      } catch (err: unknown) {
+        setError(
+          err instanceof Error ? err.message : "不明なエラーが発生しました"
+        );
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadSearchedGames();
+  }, [searchQuery, pageSize]);
+
+  useEffect(() => {
+    if (searchQuery) return; // 検索中は通常のゲーム取得をスキップ
+
     const abortController = new AbortController();
 
     async function loadPagedGames() {
@@ -31,11 +59,9 @@ export function useFetchGames(pageSize = 10) {
         }
       } catch (err: unknown) {
         if (!abortController.signal.aborted) {
-          if (err instanceof Error) {
-            setError(err.message);
-          } else {
-            setError("An unknown error occurred");
-          }
+          setError(
+            err instanceof Error ? err.message : "An unknown error occurred"
+          );
         }
       } finally {
         if (!abortController.signal.aborted) {
@@ -47,7 +73,7 @@ export function useFetchGames(pageSize = 10) {
     loadPagedGames();
 
     return () => abortController.abort();
-  }, [page, pageSize]);
+  }, [page, pageSize, searchQuery]);
 
   useEffect(() => {
     async function loadGames() {
@@ -65,11 +91,9 @@ export function useFetchGames(pageSize = 10) {
         setTrendingGames(trending);
         setNewReleases(newGames);
       } catch (err: unknown) {
-        if (err instanceof Error) {
-          setError(err.message);
-        } else {
-          setError("An unknown error occurred");
-        }
+        setError(
+          err instanceof Error ? err.message : "An unknown error occurred"
+        );
       }
     }
 
@@ -77,6 +101,8 @@ export function useFetchGames(pageSize = 10) {
   }, []);
 
   return {
+    searchQuery,
+    setSearchQuery,
     games,
     rpgGames,
     actionGames,
