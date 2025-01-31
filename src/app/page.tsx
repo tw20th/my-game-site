@@ -8,10 +8,13 @@ import { GameSection } from "@/app/components/GameSection";
 import Pagination from "@/app/components/Pagination";
 import SearchBar from "@/app/components/SearchBar";
 import RecommendButton from "@/app/components/RecommendButton";
+import { beginnerRecommendations } from "@/app/data/recommendations";
 
 export function useFetchGames(pageSize = 10) {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [games, setGames] = useState<Game[]>([]);
+  const [trendingGames] = useState<Game[]>([]);
+  const [topRatedGames] = useState<Game[]>([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -62,12 +65,13 @@ export function useFetchGames(pageSize = 10) {
     searchQuery,
     setSearchQuery,
     games,
+    trendingGames,
+    topRatedGames,
     page,
     setPage,
     loading,
     error,
     recommendation,
-    setRecommendation,
     fetchRecommendation,
   };
 }
@@ -75,6 +79,8 @@ export function useFetchGames(pageSize = 10) {
 export default function Home() {
   const {
     games,
+    trendingGames,
+    topRatedGames,
     searchQuery,
     setSearchQuery,
     page,
@@ -82,7 +88,6 @@ export default function Home() {
     loading,
     error,
     recommendation,
-    setRecommendation,
     fetchRecommendation,
   } = useFetchGames();
 
@@ -95,8 +100,56 @@ export default function Home() {
 
   return (
     <div className="container mx-auto p-4">
+      {/* スライダーセクション */}
       <SliderComponent />
+
+      {/* 検索バー */}
       <SearchBar setSearchQuery={setSearchQuery} />
+
+      {/* トレンドゲーム */}
+      <GameSection
+        title="トレンドゲーム"
+        games={trendingGames}
+        loading={loading}
+        onLoadMore={() => {}}
+      />
+
+      {/* 高評価ゲーム */}
+      <GameSection
+        title="高評価ゲーム"
+        games={topRatedGames}
+        loading={loading}
+        onLoadMore={() => {}}
+      />
+
+      {/* 初心者向けおすすめ */}
+      <GameSection
+        title="初心者向けおすすめ"
+        games={beginnerRecommendations} // 別ファイルからインポート
+        loading={false}
+        onLoadMore={() => {}}
+      />
+
+      {/* 検索結果 */}
+      {searchQuery && (
+        <GameSection
+          title={`検索結果: "${searchQuery}"`}
+          games={games}
+          loading={loading}
+          onLoadMore={() => setPage(page + 1)}
+        />
+      )}
+
+      <div className="mt-8">
+        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {games.map((game) => (
+            <GameCard key={game.id} game={game} />
+          ))}
+        </section>
+        <Pagination page={page} setPage={setPage} />
+      </div>
+
+      {/* おすすめセクション */}
       <div className="mb-4">
         <RecommendButton fetchRecommendation={fetchRecommendation} />
       </div>
@@ -106,24 +159,6 @@ export default function Home() {
           <p>{recommendation}</p>
         </div>
       )}
-      {searchQuery ? (
-        <GameSection
-          title={`検索結果: "${searchQuery}"`}
-          games={games}
-          loading={loading}
-          onLoadMore={() => setPage(page + 1)}
-        />
-      ) : (
-        <></>
-      )}
-      <div className="mt-8">
-        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {games.map((game) => (
-            <GameCard key={game.id} game={game} />
-          ))}
-        </section>
-        <Pagination page={page} setPage={setPage} />
-      </div>
     </div>
   );
 }

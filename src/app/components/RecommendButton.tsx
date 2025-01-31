@@ -2,12 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { Game } from "@/types/Game";
-import SliderComponent from "@/app/components/SliderComponent";
-import GameCard from "@/app/components/GameCard";
-import { GameSection } from "@/app/components/GameSection";
-import Pagination from "@/app/components/Pagination";
-import SearchBar from "@/app/components/SearchBar";
-import RecommendButton from "@/app/components/RecommendButton";
 
 export function useFetchGames(pageSize = 10) {
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -67,63 +61,25 @@ export function useFetchGames(pageSize = 10) {
     loading,
     error,
     recommendation,
-    // setRecommendation,
     fetchRecommendation,
   };
 }
 
-export default function Home() {
-  const {
-    games,
-    searchQuery,
-    setSearchQuery,
-    page,
-    setPage,
-    loading,
-    error,
-    recommendation,
-    setRecommendation,
-    fetchRecommendation,
-  } = useFetchGames();
-
-  if (error)
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <p className="text-xl font-bold text-red-500">Error: {error}</p>
-      </div>
-    );
+export default function RecommendButton({
+  fetchRecommendation,
+}: {
+  fetchRecommendation: (userPreferences: string) => Promise<void>;
+}) {
+  const handleClick = () => {
+    fetchRecommendation("RPGとアクションが好き");
+  };
 
   return (
-    <div className="container mx-auto p-4">
-      <SliderComponent />
-      <SearchBar setSearchQuery={setSearchQuery} />
-      <div className="mb-4">
-        <RecommendButton setRecommendation={fetchRecommendation} />
-      </div>
-      {recommendation && (
-        <div className="bg-gray-100 p-4 rounded shadow">
-          <h2 className="text-xl font-bold">おすすめゲーム</h2>
-          <p>{recommendation}</p>
-        </div>
-      )}
-      {searchQuery ? (
-        <GameSection
-          title={`検索結果: "${searchQuery}"`}
-          games={games}
-          loading={loading}
-          onLoadMore={() => setPage(page + 1)}
-        />
-      ) : (
-        <></>
-      )}
-      <div className="mt-8">
-        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {games.map((game) => (
-            <GameCard key={game.id} game={game} />
-          ))}
-        </section>
-        <Pagination page={page} setPage={setPage} />
-      </div>
-    </div>
+    <button
+      onClick={handleClick}
+      className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+    >
+      おすすめを取得
+    </button>
   );
 }

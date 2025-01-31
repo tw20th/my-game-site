@@ -17,6 +17,9 @@ export default async function handler(
   }
 
   try {
+    console.log("Received userPreferences:", userPreferences);
+    console.log("OpenAI API Key exists:", !!process.env.OPENAI_API_KEY);
+
     const prompt = `ユーザーの好みに基づいておすすめのゲームを選んでください。好み: ${userPreferences}`;
     const response = await fetch("https://api.openai.com/v1/completions", {
       method: "POST",
@@ -32,6 +35,7 @@ export default async function handler(
     });
 
     if (!response.ok) {
+      console.error("OpenAI API error:", response.statusText);
       throw new Error(`OpenAI API error: ${response.statusText}`);
     }
 
@@ -40,6 +44,8 @@ export default async function handler(
     if (!data.choices || data.choices.length === 0) {
       throw new Error("No valid response from OpenAI");
     }
+
+    console.log("OpenAI API response:", data);
 
     return res
       .status(200)
