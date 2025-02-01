@@ -7,7 +7,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
  * @type {import('next').NextConfig}
  */
 const nextConfig = {
-  reactStrictMode: true, // 🔹 厳密モードを有効化
+  reactStrictMode: true,
   images: {
     remotePatterns: [
       {
@@ -16,20 +16,23 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: "example.com", // 🔹 `example.com` の画像を許可（不要なら削除）
+        hostname: "example.com",
+      },
+      {
+        protocol: "https",
+        hostname: "upload.wikimedia.org", // ✅ 新しく追加
       },
     ],
   },
   env: {
-    OPENAI_API_KEY: process.env.OPENAI_API_KEY, // 🔹 クライアント側では利用不可（API経由で使用）
+    OPENAI_API_KEY: process.env.OPENAI_API_KEY,
   },
   webpack: (config) => {
     config.resolve.alias = {
       ...config.resolve.alias,
-      "@": path.resolve(__dirname, "src"), // 🔹 エイリアス設定
+      "@": path.resolve(__dirname, "src"),
     };
 
-    // 🔹 キャッシュを無効化（ビルド時間が増加するため、開発時のみに推奨）
     config.cache = false;
 
     return config;

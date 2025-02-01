@@ -1,22 +1,39 @@
 "use client";
 
-import { useFetchGames } from "@/app/hooks/useFetchGames";
-import Head from "next/head"; // 🔹 next/head を使用
+import { useState, useEffect } from "react";
+import Head from "next/head";
+import Navbar from "@/app/components/Navbar";
 import SliderComponent from "@/app/components/SliderComponent";
-import { GameSection } from "@/app/components/GameSection";
-import SearchBar from "@/app/components/SearchBar";
-import RecommendButton from "@/app/components/RecommendButton";
+import GameSection from "@/app/components/GameSection"; // ✅ `export default` を考慮して修正
+import { useFetchGames } from "@/app/hooks/useFetchGames";
 import { beginnerRecommendations } from "@/app/data/recommendations";
+import { Game } from "@/types/Game"; // 型インポート
 
 export default function Home() {
-  const {
-    setSearchQuery,
-    trendingGames,
-    topRatedGames,
-    recommendation,
-    fetchRecommendation,
-    loading,
-  } = useFetchGames();
+  const { setSearchQuery, trendingGames, topRatedGames, loading, error } =
+    useFetchGames();
+
+  const [showRecommendations, setShowRecommendations] = useState(false);
+  const [displayedRecommendations, setDisplayedRecommendations] = useState<
+    Game[]
+  >([]);
+
+  // おすすめセクションの更新
+  useEffect(() => {
+    if (showRecommendations) {
+      const recommendations = trendingGames
+        .sort(() => 0.5 - Math.random())
+        .slice(0, 3);
+      setDisplayedRecommendations(recommendations);
+    }
+  }, [showRecommendations, trendingGames]);
+
+  if (error)
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <p className="text-xl font-bold text-red-500">Error: {error}</p>
+      </div>
+    );
 
   return (
     <>
@@ -26,41 +43,50 @@ export default function Home() {
           href="https://fonts.bunny.net/css?family=Roboto:400,700"
         />
       </Head>
-      <div className="container mx-auto p-4">
-        <SliderComponent />
-        <SearchBar setSearchQuery={setSearchQuery} />
+
+      <Navbar setSearchQuery={setSearchQuery} />
+
+      <main className="container mx-auto p-4">
+        <section className="mb-8">
+          <h2 className="text-2xl font-bold mb-4 text-center">
+            初心者向けゲーム
+          </h2>
+          <SliderComponent games={beginnerRecommendations} />{" "}
+          {/* ✅ 型エラー防止 */}
+        </section>
+
+        <div className="text-center mb-8">
+          <button
+            onClick={() => setShowRecommendations(true)}
+            className="bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg hover:bg-green-600 transition text-xl"
+          >
+            今のおすすめ
+          </button>
+        </div>
+
+        {showRecommendations && (
+          <GameSection
+            title="今のおすすめゲーム"
+            games={displayedRecommendations}
+            loading={loading}
+            onLoadMore={() => {}}
+          />
+        )}
+
         <GameSection
           title="トレンドゲーム"
           games={trendingGames}
           loading={loading}
           onLoadMore={() => {}}
         />
+
         <GameSection
           title="高評価ゲーム"
           games={topRatedGames}
           loading={loading}
           onLoadMore={() => {}}
         />
-        <GameSection
-          title="初心者向けおすすめ"
-          games={beginnerRecommendations}
-          loading={false}
-          onLoadMore={() => {}}
-        />
-
-        {/* おすすめボタン */}
-        <div className="mt-8">
-          {fetchRecommendation && (
-            <RecommendButton fetchRecommendation={fetchRecommendation} />
-          )}
-          {recommendation && (
-            <div className="bg-gray-100 p-4 rounded shadow mt-4">
-              <h2 className="text-xl font-bold">おすすめゲーム</h2>
-              <p>{recommendation}</p>
-            </div>
-          )}
-        </div>
-      </div>
+      </main>
     </>
   );
 }

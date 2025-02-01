@@ -10,7 +10,8 @@ export const beginnerRecommendations: Game[] = [
     platforms: ["PC", "Switch", "PS"],
     genres: [{ id: 1, name: "Simulation" }],
     screenshots: [],
-    background_image: "https://example.com/stardew-valley.jpg",
+    background_image:
+      "https://upload.wikimedia.org/wikipedia/en/f/fd/Stardew_Valley.png", // ✅ 修正
     released: "2016-02-26",
   },
   {
@@ -21,7 +22,8 @@ export const beginnerRecommendations: Game[] = [
     platforms: ["PC", "Xbox", "PS", "Switch"],
     genres: [{ id: 2, name: "Adventure" }],
     screenshots: [],
-    background_image: "https://example.com/minecraft.jpg",
+    background_image:
+      "https://upload.wikimedia.org/wikipedia/en/5/51/Minecraft_cover.png", // ✅ 修正
     released: "2011-11-18",
   },
   {
@@ -32,7 +34,8 @@ export const beginnerRecommendations: Game[] = [
     platforms: ["PC", "Mobile", "Switch"],
     genres: [{ id: 3, name: "Party" }],
     screenshots: [],
-    background_image: "https://example.com/among-us.jpg",
+    background_image:
+      "https://upload.wikimedia.org/wikipedia/en/9/9a/Among_Us_cover_art.jpg", // ✅ 修正
     released: "2018-06-15",
   },
 ];
