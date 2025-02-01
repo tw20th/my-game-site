@@ -19,10 +19,11 @@ export function useFetchGames(pageSize = 10) {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [recommendation, setRecommendation] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadSearchedGames() {
-      if (!searchQuery) return; // クエリが空の場合はスキップ
+      if (!searchQuery) return;
 
       try {
         setLoading(true);
@@ -46,7 +47,7 @@ export function useFetchGames(pageSize = 10) {
   }, [searchQuery, pageSize]);
 
   useEffect(() => {
-    if (searchQuery) return; // 検索中は通常のゲーム取得をスキップ
+    if (searchQuery) return;
 
     const abortController = new AbortController();
 
@@ -100,6 +101,22 @@ export function useFetchGames(pageSize = 10) {
     loadGames();
   }, []);
 
+  // 🔹 おすすめゲームを取得
+  async function fetchRecommendation(userPreferences: string) {
+    try {
+      const response = await fetch("/api/recommend", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userPreferences }),
+      });
+      const data = await response.json();
+      setRecommendation(data.recommendation);
+    } catch (err) {
+      console.error(err);
+      setError("おすすめの取得に失敗しました");
+    }
+  }
+
   return {
     searchQuery,
     setSearchQuery,
@@ -113,5 +130,7 @@ export function useFetchGames(pageSize = 10) {
     setPage,
     loading,
     error,
+    recommendation, // 🔹 追加
+    fetchRecommendation, // 🔹 追加
   };
 }

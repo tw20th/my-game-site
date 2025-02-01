@@ -16,26 +16,42 @@ export default async function handler(
       .json({ error: "Invalid request: userPreferences is required" });
   }
 
+  // 🔹 OpenAI API Key が存在するかチェック
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) {
+    console.error("❌ OpenAI API Key is missing!");
+    return res.status(500).json({ error: "Missing OpenAI API key" });
+  }
+
   try {
     console.log("Received userPreferences:", userPreferences);
-    console.log("OpenAI API Key exists:", !!process.env.OPENAI_API_KEY);
+    console.log("OpenAI API Key exists:", !!apiKey);
 
-    const prompt = `ユーザーの好みに基づいておすすめのゲームを選んでください。好み: ${userPreferences}`;
-    const response = await fetch("https://api.openai.com/v1/completions", {
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+        Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: "text-davinci-003",
-        prompt,
+        model: "gpt-3.5-turbo", // 🔹 最新のモデルに変更
+        messages: [
+          { role: "system", content: "あなたはゲームの専門家です。" },
+          {
+            role: "user",
+            content: `ユーザーの好みに基づいておすすめのゲームを選んでください。好み: ${userPreferences}`,
+          },
+        ],
         max_tokens: 150,
       }),
     });
 
     if (!response.ok) {
-      console.error("OpenAI API error:", response.statusText);
+      console.error(
+        "❌ OpenAI API error:",
+        response.status,
+        response.statusText
+      );
       throw new Error(`OpenAI API error: ${response.statusText}`);
     }
 
@@ -45,13 +61,13 @@ export default async function handler(
       throw new Error("No valid response from OpenAI");
     }
 
-    console.log("OpenAI API response:", data);
+    console.log("✅ OpenAI API response:", data);
 
     return res
       .status(200)
-      .json({ recommendation: data.choices[0].text.trim() });
+      .json({ recommendation: data.choices[0].message.content.trim() });
   } catch (error) {
-    console.error("Error generating recommendation:", error);
+    console.error("❌ Error generating recommendation:", error);
     return res.status(500).json({ error: "Failed to generate recommendation" });
   }
 }

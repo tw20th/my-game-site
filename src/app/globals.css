@@ -2,6 +2,9 @@
 @import "slick-carousel/slick/slick.css";
 @import "slick-carousel/slick/slick-theme.css";
 
+/* Bunny Fonts の Roboto を適用 */
+@import url("https://fonts.bunny.net/css?family=Roboto:400,700&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -24,7 +27,7 @@
 body {
   color: var(--foreground);
   background-color: var(--background);
-  font-family: "Arial", "Helvetica", sans-serif;
+  font-family: "Roboto", sans-serif; /* Roboto フォントを適用 */
   margin: 0;
   padding: 0;
   line-height: 1.5;
